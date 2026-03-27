@@ -38,17 +38,17 @@ const data = {
     },
     {
       title: "Jogos",
-      url: "#",
+      url: "/games",
       icon: IconListDetails,
     },
     {
       title: "Jogadores",
-      url: "#",
+      url: "/players",
       icon: IconChartBar,
     },
     {
       title: "Caixa",
-      url: "#",
+      url: "/cash",
       icon: IconFolder,
     },
     {
