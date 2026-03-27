@@ -9,8 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AppLayoutRouteImport } from './routes/layout'
-import { Route as AppIndexRouteImport } from './routes/index'
+import { Route as AppLayoutRouteImport } from './routes/_app/layout'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
   id: '/_app',
@@ -21,24 +22,32 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/dashboard/': typeof AppDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
+  '/dashboard': typeof AppDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppLayoutRouteWithChildren
   '/_app/': typeof AppIndexRoute
+  '/_app/dashboard/': typeof AppDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_app' | '/_app/'
+  to: '/' | '/dashboard'
+  id: '__root__' | '/_app' | '/_app/' | '/_app/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -61,15 +70,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/dashboard/': {
+      id: '/_app/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AppDashboardIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
   }
 }
 
 interface AppLayoutRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppDashboardIndexRoute: typeof AppDashboardIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppDashboardIndexRoute: AppDashboardIndexRoute,
 }
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
