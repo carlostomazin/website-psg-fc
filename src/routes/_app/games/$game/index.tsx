@@ -1,9 +1,31 @@
+import { Header } from '@/components/header'
+import { useGameDataById } from '@/hooks/useGameData'
+import { useGamePlayerDataByGameId } from '@/hooks/useGamePlayerData'
 import { createFileRoute } from '@tanstack/react-router'
+import { DataTable } from './-components/data-table'
+import { columns } from './-components/columns'
 
 export const Route = createFileRoute('/_app/games/$game/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/_app/games/$game/"!</div>
+  const { game } = Route.useParams()
+  const { data: gameData } = useGameDataById(game)
+  const { data: gamePlayerData } = useGamePlayerDataByGameId(game)
+
+  // normalize game date
+  const gameDate = gameData ? new Date(gameData.game_date).toLocaleDateString() : null
+  console.log("gamePlayerData:", gamePlayerData); // Log do gameData para depuração
+
+  return (
+    <>
+      <Header name_page={`Jogo ${gameDate}`} />
+      <div className="@container/main flex flex-1 flex-col gap-2 px-2 lg:px-6">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          <DataTable columns={columns} data={gamePlayerData} />
+        </div>
+      </div>
+    </>
+  )
 }

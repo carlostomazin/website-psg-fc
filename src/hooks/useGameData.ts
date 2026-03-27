@@ -15,19 +15,31 @@ const fetchData = async (): Promise<GameData[] | null> => {
     return response.data;
 }
 
+const fetchDataById = async (id: string): Promise<GameData | null> => {
+    const response = await supabase
+        .from("games")
+        .select("*")
+        .eq("id", id)
+        .single();
+    
+    return response.data;
+}
+
 export function useGameData() {
     const query = useQuery({
-        queryFn: fetchData,
         queryKey: ['game-data'],
+        queryFn: fetchData,
     })
 
     return query;
 }
 
-// export const useGameById = (gameId: string) => {
-//     return useQuery({
-//         queryKey: ['game', gameId],
-//         queryFn: () => getGameById(gameId),
-//         enabled: !!gameId, // Only run the query if gameId is provided
-//     })
-// }
+export function useGameDataById(id: string) {
+    const query = useQuery({
+        queryKey: ['game-data', id],
+        queryFn: () => fetchDataById(id),
+        enabled: !!id,
+
+    })
+    return query;
+}

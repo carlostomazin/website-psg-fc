@@ -17,7 +17,9 @@ export interface GamePlayerData {
   updated_at: string | null
   is_goalkeeper: boolean
   is_visitor: boolean
-  invited_by: string | null
+  invited_by: {
+    name: string
+  }
   team: string | null
   amount_paid: number | null
   paid: boolean
@@ -32,13 +34,20 @@ const fetchData = async (): Promise<GamePlayerData[] | null> => {
   return response.data
 }
 
+const fetchDataByGameId = async (id: string): Promise<GamePlayerData[] | null> => {
+  const response = await supabase
+    .from("game_players")
+    .select("*, player:player_id(id, name), game:game_id(id, game_date), invited_by(name)")
+    .eq("game_id", id)
+  
+  return response.data;
+}
+
 export function useGamePlayerData() {
-  const query = useQuery({
+  return useQuery({
     queryKey: ['game-player-data'],
     queryFn: fetchData,
   })
-
-  return query
 }
 
 export function useGamesPendingPayments() {
@@ -74,4 +83,12 @@ export function useGamesPendingPayments() {
         .sort((a, b) => new Date(b.gameDate).getTime() - new Date(a.gameDate).getTime());
     }
   });
+}
+
+export function useGamePlayerDataByGameId(gameId: string) {
+  return useQuery({
+    queryKey: ['game-player-data', gameId],
+    queryFn: () => fetchDataByGameId(gameId),
+    enabled: !!gameId,
+  })
 }
