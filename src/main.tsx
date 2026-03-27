@@ -6,6 +6,7 @@ import { routeTree } from './routeTree.gen'
 
 import { ThemeProvider } from "@/components/theme-provider"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 // Set up a Router instance
 const router = createRouter({
@@ -37,7 +38,9 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
           <RouterProvider router={router} />
+          </TooltipProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </StrictMode>,
