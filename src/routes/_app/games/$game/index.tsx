@@ -16,14 +16,13 @@ function RouteComponent() {
 
   // normalize game date
   const gameDate = gameData ? new Date(gameData.game_date).toLocaleDateString() : null
-  console.log("gamePlayerData:", gamePlayerData); // Log do gameData para depuração
 
   return (
     <>
       <Header name_page={`Jogo ${gameDate}`} />
       <div className="@container/main flex flex-1 flex-col gap-2 px-2 lg:px-6">
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-          <DataTable columns={columns} data={gamePlayerData} />
+          <DataTable columns={columns} data={gamePlayerData ?? []} />
         </div>
       </div>
     </>
