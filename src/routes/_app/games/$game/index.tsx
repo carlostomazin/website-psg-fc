@@ -23,7 +23,7 @@ function RouteComponent() {
       <Header name_page={`Jogo ${gameDate}`} />
       <div className="@container/main flex flex-1 flex-col gap-2 px-2 lg:px-6">
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-          <SectionHead gameDate={gameDate} />
+          <SectionHead gameDate={gameDate} gameId={game} />
           <DataTable columns={columns} data={gamePlayerData ?? []} />
         </div>
       </div>

@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { ButtonCreatePlayers } from './button-create-players'
 
 
-export function SectionHead({ gameDate }: { gameDate: string | null }) {
+export function SectionHead({ gameDate, gameId }: { gameDate: string | null, gameId: string }) {
 
   return (
     <div className="flex flex-col gap-2 px-4 lg:px-6">
@@ -15,7 +15,7 @@ export function SectionHead({ gameDate }: { gameDate: string | null }) {
         <Button variant="outline" size="sm" disabled className="ml-2">
           Excluir Jogo
         </Button>
-        <ButtonCreatePlayers />
+        <ButtonCreatePlayers gameId={gameId} />
       </div>
     </div>
   )

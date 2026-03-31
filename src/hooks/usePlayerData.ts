@@ -18,11 +18,3 @@ export function usePlayerData() {
 
     return query;
 }
-
-// export const useGameById = (gameId: string) => {
-//     return useQuery({
-//         queryKey: ['game', gameId],
-//         queryFn: () => getGameById(gameId),
-//         enabled: !!gameId, // Only run the query if gameId is provided
-//     })
-// }
