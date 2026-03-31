@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import supabase from "@/lib/supabase-client"
 
 export interface GamePlayerData {
@@ -91,4 +91,20 @@ export function useGamePlayerDataByGameId(gameId: string) {
     queryFn: () => fetchDataByGameId(gameId),
     enabled: !!gameId,
   })
+}
+
+export function useGamePlayerUpdatePaymentStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ playerId, paid }: { playerId: string; paid: boolean }) => {
+      await supabase
+        .from("game_players")
+        .update({ paid })
+        .eq("id", playerId)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['game-player-data'] });
+    }
+  });
 }

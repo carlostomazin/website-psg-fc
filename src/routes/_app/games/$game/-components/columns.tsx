@@ -2,6 +2,10 @@ import type { GamePlayerData } from "@/hooks/useGamePlayerData"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox";
+import { DataTableRowActions } from "./data-table-row-actions";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import { TableCellViewer } from "./data-table-cell-viewer";
 
 export const columns: ColumnDef<GamePlayerData>[] = [
   {
@@ -31,6 +35,7 @@ export const columns: ColumnDef<GamePlayerData>[] = [
     enableHiding: false,
   },
   {
+    id: "player.name",
     accessorKey: "player.name",
     header: "Nome",
     cell: ({ row }) => {
@@ -39,12 +44,12 @@ export const columns: ColumnDef<GamePlayerData>[] = [
       const isVisitor = row.original.is_visitor;
       return (
         <div className="flex items-center gap-2">
-          {playerName}
-          {isGoalkeeper && <Badge variant="destructive">Goleiro</Badge>}
-          {isVisitor && <Badge>Visitante</Badge>}
+          <TableCellViewer item={row.original} />
+
         </div>
       )
-    }
+    },
+    enableHiding: false,
   },
   {
     accessorKey: "invited_by.name",
@@ -55,16 +60,21 @@ export const columns: ColumnDef<GamePlayerData>[] = [
     }
   },
   {
-    accessorKey: "acoes",
-    header: "Ações",
-    cell: () => {
+    accessorKey: "paid",
+    header: "Pago",
+    cell: ({ row }) => {
+      // check box
       return (
-        <div className="flex gap-2">
-          {/* Aqui você pode adicionar botões ou links para ações específicas */}
-          <button className="px-2 py-1 text-sm bg-blue-500 text-white rounded">Editar</button>
-          <button className="px-2 py-1 text-sm bg-red-500 text-white rounded">Excluir</button>
-        </div>
+        <Checkbox
+          checked={row.original.paid}
+          aria-label="Paid status"
+        />
       )
     }
+  },
+  {
+    accessorKey: "acoes",
+    header: "Ações",
+    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]

@@ -3,6 +3,7 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 
@@ -32,10 +33,21 @@ export function DataTable<TData, TValue>({
     }
   }, [initialData])
 
+  const [rowSelection, setRowSelection] = React.useState({})
+
   const table = useReactTable({
     data,
     columns,
+    initialState: {
+      sorting: [{ id: 'player.name', desc: false }],
+    },
+    state: {
+      rowSelection,
+    },
+    enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onRowSelectionChange: setRowSelection,
   })
 
   return (
