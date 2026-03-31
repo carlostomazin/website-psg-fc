@@ -36,15 +36,7 @@ export const columns: ColumnDef<GamePlayerData>[] = [
     accessorKey: "player.name",
     header: "Nome",
     cell: ({ row }) => {
-      const playerName = row.original.player?.name || "Desconecido";
-      const isGoalkeeper = row.original.is_goalkeeper;
-      const isVisitor = row.original.is_visitor;
-      return (
-        <div className="flex items-center gap-2">
-          <TableCellViewer item={row.original} />
-
-        </div>
-      )
+      return <TableCellViewer item={row.original} />
     },
     enableHiding: false,
   },
