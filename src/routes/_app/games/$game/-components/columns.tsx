@@ -1,10 +1,7 @@
 import type { GamePlayerData } from "@/hooks/useGamePlayerData"
 import type { ColumnDef } from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableRowActions } from "./data-table-row-actions";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
 import { TableCellViewer } from "./data-table-cell-viewer";
 
 export const columns: ColumnDef<GamePlayerData>[] = [
