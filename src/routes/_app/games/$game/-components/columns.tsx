@@ -40,14 +40,14 @@ export const columns: ColumnDef<GamePlayerData>[] = [
     },
     enableHiding: false,
   },
-  {
-    accessorKey: "invited_by.name",
-    header: "Convidado por",
-    cell: ({ row }) => {
-      const invitedBy = row.original.invited_by;
-      return invitedBy ? invitedBy.name : "-";
-    }
-  },
+  // {
+  //   accessorKey: "invited_by.name",
+  //   header: "Convidado por",
+  //   cell: ({ row }) => {
+  //     const invitedBy = row.original.invited_by;
+  //     return invitedBy ? invitedBy.name : "-";
+  //   }
+  // },
   {
     accessorKey: "paid",
     header: "Pago",
