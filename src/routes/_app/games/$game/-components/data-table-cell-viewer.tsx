@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useGamePlayerUpdatePaymentStatus } from "@/hooks/useGamePlayerData"
+import { Switch } from "@/components/ui/switch"
 
 interface TableCellViewerProps {
   item: any
@@ -27,6 +28,7 @@ interface TableCellViewerProps {
 export function TableCellViewer({ item, open, onClose, showTrigger = true }: TableCellViewerProps) {
   const [internalOpen, setInternalOpen] = useState(false)
   const [nome, setNome] = useState(item.player.name)
+  const [convidadoPor, setConvidadoPor] = useState(item.invited_by?.name || "-")
   const [confirmado, setConfirmado] = useState(item.paid ? "sim" : "não")
   const isMobile = useIsMobile()
 
@@ -69,16 +71,20 @@ export function TableCellViewer({ item, open, onClose, showTrigger = true }: Tab
               />
             </div>
             <div className="flex flex-col gap-3">
+              <Label htmlFor="convidadoPor">Convidado por</Label>
+              <Input
+                id="convidadoPor"
+                value={convidadoPor}
+                onChange={(e) => setConvidadoPor(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col gap-3">
               <Label htmlFor="confirmado">Pagou</Label>
-              <Select value={confirmado} onValueChange={setConfirmado}>
-                <SelectTrigger id="confirmado" className="w-full">
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sim">Sim</SelectItem>
-                  <SelectItem value="não">Não</SelectItem>
-                </SelectContent>
-              </Select>
+              <Switch
+                id="confirmado"
+                checked={confirmado === "sim"}
+                onCheckedChange={(value) => setConfirmado(value ? "sim" : "não")}
+              />
             </div>
           </form>
         </div>
