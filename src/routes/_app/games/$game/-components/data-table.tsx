@@ -3,6 +3,7 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
@@ -15,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DataTableToolbar } from "./data-table-toolbar"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -24,8 +26,10 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data: initialData,
-}: DataTableProps<TData, TValue>) {
+  onReload,
+}: DataTableProps<TData, TValue> & { onReload?: () => void }) {
   const [data, setData] = React.useState<any[]>([])
+  const [rowSelection, setRowSelection] = React.useState({})
 
   React.useEffect(() => {
     if (initialData && initialData.length > 0) {
@@ -33,7 +37,6 @@ export function DataTable<TData, TValue>({
     }
   }, [initialData])
 
-  const [rowSelection, setRowSelection] = React.useState({})
 
   const table = useReactTable({
     data,
@@ -45,13 +48,15 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
     enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: setRowSelection,
+    getFilteredRowModel: getFilteredRowModel(),
   })
 
   return (
     <div className="w-full flex-col justify-start gap-6 flex">
+      <DataTableToolbar table={table} onReload={onReload}/>
       <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
         <div className="overflow-hidden rounded-lg border">
           <Table>

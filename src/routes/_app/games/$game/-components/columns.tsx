@@ -50,7 +50,7 @@ export const columns: ColumnDef<GamePlayerData>[] = [
   // },
   {
     accessorKey: "paid",
-    header: "Pago",
+    header: "Pagou",
     cell: ({ row }) => {
       // check box
       return (

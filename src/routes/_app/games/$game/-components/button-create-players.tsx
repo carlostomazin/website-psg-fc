@@ -27,7 +27,7 @@ export function ButtonCreatePlayers({ gameId }: { gameId: string }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="ml-2" disabled={!!(gamePlayerData?.length)}>
+        <Button variant="outline" size="sm" disabled={!!(gamePlayerData?.length)}>
           Adicionar Jogadores
         </Button>
       </DialogTrigger>

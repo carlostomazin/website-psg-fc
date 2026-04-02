@@ -13,7 +13,7 @@ export const Route = createFileRoute('/_app/games/$game/')({
 function RouteComponent() {
   const { game } = Route.useParams()
   const { data: gameData } = useGameDataById(game)
-  const { data: gamePlayerData } = useGamePlayerDataByGameId(game)
+  const { data: gamePlayerData, refetch: refetchGamePlayerData } = useGamePlayerDataByGameId(game)
 
   // normalize game date
   const gameDate = gameData ? new Date(gameData.game_date).toLocaleDateString() : null
@@ -24,7 +24,7 @@ function RouteComponent() {
       <div className="@container/main flex flex-1 flex-col gap-2 px-2 lg:px-6">
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
           <SectionHead gameDate={gameDate} gameId={game} />
-          <DataTable columns={columns} data={gamePlayerData ?? []} />
+          <DataTable columns={columns} data={gamePlayerData ?? []} onReload={refetchGamePlayerData} />
         </div>
       </div>
     </>
