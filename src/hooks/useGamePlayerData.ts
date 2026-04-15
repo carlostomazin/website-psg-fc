@@ -77,10 +77,15 @@ export function useGamesPendingPayments() {
         .filter(([, game]) => game.unpaidCount > 0)
         .map(([gameId, game]) => ({
           gameId,
-          gameDate: new Date(game.gameDate).toLocaleDateString('pt-BR'),
+          gameDateRaw: game.gameDate,
           unpaidCount: game.unpaidCount,
         }))
-        .sort((a, b) => new Date(b.gameDate).getTime() - new Date(a.gameDate).getTime());
+        .sort((a, b) => new Date(b.gameDateRaw).getTime() - new Date(a.gameDateRaw).getTime())
+        .map(({ gameId, gameDateRaw, unpaidCount }) => ({
+          gameId,
+          gameDate: new Date(gameDateRaw).toLocaleDateString('pt-BR'),
+          unpaidCount,
+        }));
     }
   });
 }

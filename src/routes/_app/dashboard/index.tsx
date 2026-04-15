@@ -18,12 +18,12 @@ function RouteComponent() {
   return (
     <>
       <Header breadcrumbs={[{ label: "Dashboard" }]} />
-    <div className="@container/main flex flex-1 flex-col gap-2">
-      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <SectionCardsHead games={gameData} players={playerData} />
-        <SectionCardsMid gamesPendingPayments={gamesPendingPaymentsData} />
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          <SectionCardsHead games={gameData} players={playerData} />
+          <SectionCardsMid gamesPendingPayments={gamesPendingPaymentsData} />
+        </div>
       </div>
-    </div>
     </>
   )
 }
