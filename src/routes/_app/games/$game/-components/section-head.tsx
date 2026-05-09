@@ -18,7 +18,7 @@ export function SectionHead({ gameDate, gameId }: { gameDate: string | null, gam
       return
     }
 
-    const textToCopy = `Data do jogo: ${gameDate || 'N/A'}\n\n${debtors.map((player) => `- ${player.player.name}`).join('\n')}`
+    const textToCopy = `Data do jogo: ${gameDate || 'N/A'}\n\n${debtors.map((player) => `- ${player.player.name} (${player.invited_by})`).join('\n')}`
 
     try {
       await navigator.clipboard.writeText(textToCopy)
