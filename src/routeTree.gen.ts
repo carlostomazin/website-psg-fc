@@ -11,8 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppLayoutRouteImport } from './routes/_app/layout'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppPlayersIndexRouteImport } from './routes/_app/players/index'
 import { Route as AppGamesIndexRouteImport } from './routes/_app/games/index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
+import { Route as AppPlayersPlayerIndexRouteImport } from './routes/_app/players/$player/index'
 import { Route as AppGamesGameIndexRouteImport } from './routes/_app/games/$game/index'
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
@@ -22,6 +24,11 @@ const AppLayoutRoute = AppLayoutRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppPlayersIndexRoute = AppPlayersIndexRouteImport.update({
+  id: '/players/',
+  path: '/players/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppGamesIndexRoute = AppGamesIndexRouteImport.update({
@@ -34,6 +41,11 @@ const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppPlayersPlayerIndexRoute = AppPlayersPlayerIndexRouteImport.update({
+  id: '/players/$player/',
+  path: '/players/$player/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppGamesGameIndexRoute = AppGamesGameIndexRouteImport.update({
   id: '/games/$game/',
   path: '/games/$game/',
@@ -44,13 +56,17 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/dashboard/': typeof AppDashboardIndexRoute
   '/games/': typeof AppGamesIndexRoute
+  '/players/': typeof AppPlayersIndexRoute
   '/games/$game/': typeof AppGamesGameIndexRoute
+  '/players/$player/': typeof AppPlayersPlayerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/dashboard': typeof AppDashboardIndexRoute
   '/games': typeof AppGamesIndexRoute
+  '/players': typeof AppPlayersIndexRoute
   '/games/$game': typeof AppGamesGameIndexRoute
+  '/players/$player': typeof AppPlayersPlayerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -58,20 +74,36 @@ export interface FileRoutesById {
   '/_app/': typeof AppIndexRoute
   '/_app/dashboard/': typeof AppDashboardIndexRoute
   '/_app/games/': typeof AppGamesIndexRoute
+  '/_app/players/': typeof AppPlayersIndexRoute
   '/_app/games/$game/': typeof AppGamesGameIndexRoute
+  '/_app/players/$player/': typeof AppPlayersPlayerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard/' | '/games/' | '/games/$game/'
+  fullPaths:
+    | '/'
+    | '/dashboard/'
+    | '/games/'
+    | '/players/'
+    | '/games/$game/'
+    | '/players/$player/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/games' | '/games/$game'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/games'
+    | '/players'
+    | '/games/$game'
+    | '/players/$player'
   id:
     | '__root__'
     | '/_app'
     | '/_app/'
     | '/_app/dashboard/'
     | '/_app/games/'
+    | '/_app/players/'
     | '/_app/games/$game/'
+    | '/_app/players/$player/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/players/': {
+      id: '/_app/players/'
+      path: '/players'
+      fullPath: '/players/'
+      preLoaderRoute: typeof AppPlayersIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/games/': {
       id: '/_app/games/'
       path: '/games'
@@ -106,6 +145,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof AppDashboardIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/players/$player/': {
+      id: '/_app/players/$player/'
+      path: '/players/$player'
+      fullPath: '/players/$player/'
+      preLoaderRoute: typeof AppPlayersPlayerIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/games/$game/': {
@@ -122,14 +168,18 @@ interface AppLayoutRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
   AppGamesIndexRoute: typeof AppGamesIndexRoute
+  AppPlayersIndexRoute: typeof AppPlayersIndexRoute
   AppGamesGameIndexRoute: typeof AppGamesGameIndexRoute
+  AppPlayersPlayerIndexRoute: typeof AppPlayersPlayerIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppDashboardIndexRoute: AppDashboardIndexRoute,
   AppGamesIndexRoute: AppGamesIndexRoute,
+  AppPlayersIndexRoute: AppPlayersIndexRoute,
   AppGamesGameIndexRoute: AppGamesGameIndexRoute,
+  AppPlayersPlayerIndexRoute: AppPlayersPlayerIndexRoute,
 }
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(

@@ -43,6 +43,16 @@ const fetchDataByGameId = async (id: string): Promise<GamePlayerData[] | null> =
   return response.data;
 }
 
+const fetchDataByPlayerId = async (playerId: string): Promise<GamePlayerData[] | null> => {
+  const response = await supabase
+    .from("game_players")
+    .select("*, player:player_id(id, name), game:game_id(id, game_date), invited_by(name)")
+    .eq("player_id", playerId)
+    .order('created_at', { ascending: false })
+
+  return response.data;
+}
+
 export function useGamePlayerData() {
   return useQuery({
     queryKey: ['game-player-data'],
@@ -95,6 +105,14 @@ export function useGamePlayerDataByGameId(gameId: string) {
     queryKey: ['game-player-data', gameId],
     queryFn: () => fetchDataByGameId(gameId),
     enabled: !!gameId,
+  })
+}
+
+export function useGamePlayerDataByPlayerId(playerId: string) {
+  return useQuery({
+    queryKey: ['game-player-data', 'player', playerId],
+    queryFn: () => fetchDataByPlayerId(playerId),
+    enabled: !!playerId,
   })
 }
 
