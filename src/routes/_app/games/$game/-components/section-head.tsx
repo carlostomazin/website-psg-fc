@@ -1,11 +1,16 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ButtonCreatePlayers } from './button-create-players'
 import { useGamePlayerDataByGameId } from '@/hooks/useGamePlayerData'
-import { Settings} from "lucide-react"
+import { useDeleteGame } from '@/hooks/useGameData'
+import { useNavigate } from '@tanstack/react-router'
+import { Settings, Trash2} from "lucide-react"
 
 export function SectionHead({ gameDate, gameId }: { gameDate: string | null, gameId: string }) {
+  const navigate = useNavigate()
+  const [isDeleting, setIsDeleting] = useState(false)
   const { data: gamePlayerData, isLoading } = useGamePlayerDataByGameId(gameId)
+  const deleteGameMutation = useDeleteGame()
 
   const debtors = useMemo(() => {
     if (!gamePlayerData) return []
@@ -38,10 +43,32 @@ export function SectionHead({ gameDate, gameId }: { gameDate: string | null, gam
           <Settings className="inline-block" />
           Settings
         </Button>
-        {/* <Button variant="outline" size="sm" disabled className="ml-2">
+        <Button
+          variant="destructive"
+          size="sm"
+          disabled={isDeleting}
+          onClick={async () => {
+            if (!window.confirm('Tem certeza que deseja excluir este jogo? Essa ação não pode ser desfeita.')) {
+              return
+            }
+
+            setIsDeleting(true)
+
+            try {
+              await deleteGameMutation.mutateAsync(gameId)
+              window.alert('Jogo excluído com sucesso.')
+              navigate({ to: '/games' })
+            } catch (error) {
+              console.error('Erro ao excluir jogo', error)
+              window.alert('Falha ao excluir o jogo. Tente novamente.')
+            } finally {
+              setIsDeleting(false)
+            }
+          }}
+        >
           <Trash2 className="inline-block" />
           Excluir Jogo
-        </Button> */}
+        </Button>
 
         <Button variant="outline" size="sm" disabled={isLoading || debtors.length === 0}
           onClick={copyDebtorsToClipboard}

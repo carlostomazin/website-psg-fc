@@ -60,12 +60,30 @@ const postData = async (data: GameDataPost) => {
         .insert(data)
 }
 
+const deleteData = async (id: string) => {
+    await supabase
+        .from("games")
+        .delete()
+        .eq("id", id)
+}
+
 export function useGameMutate() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: postData,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['game-data'] })
+        },
+    })
+}
+
+export function useDeleteGame() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: deleteData,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['game-data'] });
+            queryClient.invalidateQueries({ queryKey: ['game-player-data'] });
         },
     })
 }
