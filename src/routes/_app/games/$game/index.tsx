@@ -6,6 +6,7 @@ import { SectionHead } from './-components/section-head'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import React from 'react'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 export const Route = createFileRoute('/_app/games/$game/')({
   component: RouteComponent,
@@ -58,7 +59,9 @@ function RouteComponent() {
                           <TableCell>
                             <Link to={"/players/$player"} params={{ player: playerData.player.id }}>
                               {playerData.player.name}
+                              
                             </Link>
+                            {playerData.is_goalkeeper && <Badge variant="default" className="ml-2">GK</Badge>}
                           </TableCell>
                           <TableCell>{playerData.invited_by ? playerData.invited_by.name : '-'}</TableCell>
                           <TableCell>
