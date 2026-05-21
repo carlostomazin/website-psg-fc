@@ -66,3 +66,21 @@ export function usePlayerMutate() {
         },
     })
 }
+
+const deleteData = async (id: string) => {
+    await supabase
+        .from('players')
+        .delete()
+        .eq('id', id)
+}
+
+export function useDeletePlayer() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: deleteData,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['player-data'] });
+            queryClient.invalidateQueries({ queryKey: ['game-player-data'] });
+        },
+    })
+}

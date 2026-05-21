@@ -1,10 +1,11 @@
 import * as React from "react"
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Header } from '@/components/header'
-import { usePlayerDataById } from '@/hooks/usePlayerData'
+import { usePlayerDataById, useDeletePlayer } from '@/hooks/usePlayerData'
 import { useGamePlayerDataByPlayerId, useGamePlayerUpdatePaymentStatus } from '@/hooks/useGamePlayerData'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/_app/players/$player/')({
   component: RouteComponent,
@@ -17,6 +18,9 @@ function RouteComponent() {
   const { data: playerData, isLoading: isPlayerLoading, isError: isPlayerError } = usePlayerDataById(playerId)
   const { data: playerGames, isLoading: isGamesLoading, isError: isGamesError } = useGamePlayerDataByPlayerId(playerId)
   const paymentStatusMutation = useGamePlayerUpdatePaymentStatus()
+  const deletePlayerMutation = useDeletePlayer()
+  const navigate = useNavigate()
+  const [isDeleting, setIsDeleting] = React.useState(false)
   const [processingPaymentId, setProcessingPaymentId] = React.useState<string | null>(null)
 
   const games = playerGames ?? []
@@ -35,6 +39,31 @@ function RouteComponent() {
             <div className="flex gap-2">
               <Button variant="outline" asChild size="sm">
                 <Link to="/players">Voltar</Link>
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={isDeleting}
+                onClick={async () => {
+                  if (!window.confirm('Tem certeza que deseja excluir este jogador? Essa ação não pode ser desfeita.')) {
+                    return
+                  }
+
+                  setIsDeleting(true)
+
+                  try {
+                    await deletePlayerMutation.mutateAsync(playerId)
+                    window.alert('Jogador excluído com sucesso.')
+                    navigate({ to: '/players' })
+                  } catch (error) {
+                    console.error('Erro ao excluir jogador', error)
+                    window.alert('Falha ao excluir o jogador. Tente novamente.')
+                  } finally {
+                    setIsDeleting(false)
+                  }
+                }}
+              >
+                <Trash2 className="inline-block" />
               </Button>
             </div>
           </div>
