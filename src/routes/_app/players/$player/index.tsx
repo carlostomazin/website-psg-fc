@@ -69,21 +69,28 @@ function RouteComponent() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-border bg-background p-4 shadow-sm sm:p-6">
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Total de jogos</p>
-                  <p className="text-lg font-semibold text-foreground">{games.length}</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-3xl border border-border bg-background p-4 shadow-sm sm:p-6">
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Total de jogos</p>
+                    <p className="text-lg font-semibold text-foreground">{games.length}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Jogos em aberto</p>
-                  <p className="text-lg font-semibold text-foreground">{owedGames.length}</p>
+              </div>
+
+              <div className="rounded-3xl border border-border bg-background p-4 shadow-sm sm:p-6">
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Jogos devendo</p>
+                    <p className="text-lg font-semibold text-foreground">{owedGames.length}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="overflow-hidden rounded-3xl border border-border bg-background shadow-sm">
+          {/* <section className="overflow-hidden rounded-3xl border border-border bg-background shadow-sm">
             <div className="px-4 py-5 sm:px-6">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -163,7 +170,7 @@ function RouteComponent() {
                 </Table>
               </div>
             </div>
-          </section>
+          </section> */}
 
           <section className="overflow-hidden rounded-3xl border border-border bg-background shadow-sm">
             <div className="px-4 py-5 sm:px-6">
@@ -185,7 +192,6 @@ function RouteComponent() {
                     <TableRow>
                       <TableHead>Jogo</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Pago</TableHead>
                       <TableHead>Convidado por</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -210,13 +216,28 @@ function RouteComponent() {
                               {new Date(game.game.game_date).toLocaleDateString('pt-BR')}
                             </Link>
                           </TableCell>
-                          <TableCell>
-                            {game.paid ? 'Pago' : 'Devendo'}
-                          </TableCell>
-                          <TableCell>
-                            {game.amount_paid != null ? `R$ ${game.amount_paid.toFixed(2)}` : '-'}
-                          </TableCell>
                           <TableCell>{game.invited_by?.name ?? '-'}</TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={paymentStatusMutation.isPending && processingPaymentId !== game?.id}
+
+                              onClick={() => {
+                                setProcessingPaymentId(game?.id || null)
+                                paymentStatusMutation.mutate(
+                                  { playerId: game.id, paid: !game.paid },
+                                  {
+                                    onSettled: () => setProcessingPaymentId(null),
+                                  }
+                                )
+                              }}
+                            >
+                              <span className={game.paid ? 'text-green-500' : 'text-red-500'}>
+                                {game.paid ? 'Pago' : 'Devendo'}
+                              </span>
+                            </Button>
+                          </TableCell>
                         </TableRow>
                       ))
                     ) : (

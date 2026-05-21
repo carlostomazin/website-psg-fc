@@ -22,23 +22,29 @@ export function useAddPlayersToGame() {
       const existingGamePlayers = await getGamePlayersByGameId(gameId);
 
       for (const playerData of lista) {
-        // Check if player exists
-        let player = existingPlayers.find(p => p.name === playerData.name);
+        // Normalize player name to lowercase and trim whitespace
+        const normalizedName = playerData.name.trim().toLowerCase();
+
+        // Check if player exists (compare normalized)
+        let player = existingPlayers.find(p => p.name?.trim().toLowerCase() === normalizedName);
         if (!player) {
-          // Create new player
-          player = await postPlayer({ name: playerData.name });
+          // Create new player with normalized name
+          player = await postPlayer({ name: normalizedName });
+          existingPlayers.push(player);
         }
 
-        // Find invited_by player
+        // Find invited_by player (normalize inviter name if present)
         let invitedById: string | null = null;
         if (playerData.invited_by_name) {
-          const invitedByPlayer = existingPlayers.find(p => p.name === playerData.invited_by_name);
+          const normalizedInvitedBy = playerData.invited_by_name.trim().toLowerCase();
+          const invitedByPlayer = existingPlayers.find(p => p.name?.trim().toLowerCase() === normalizedInvitedBy);
           if (invitedByPlayer) {
             invitedById = invitedByPlayer.id;
           } else {
-            // Optionally, you could create the inviter as well if they don't exist
-            const newInviter = await postPlayer({ name: playerData.invited_by_name });
+            // Create inviter with normalized name if they don't exist
+            const newInviter = await postPlayer({ name: normalizedInvitedBy });
             invitedById = newInviter.id;
+            existingPlayers.push(newInviter);
           }
         }
 

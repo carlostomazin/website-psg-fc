@@ -34,8 +34,8 @@ function RouteComponent() {
                   <TableRow>
                     <TableHead>Nome</TableHead>
                     <TableHead>Convidado por</TableHead>
+                    {/* <TableHead>Status</TableHead> */}
                     <TableHead>Status</TableHead>
-                    <TableHead>Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -62,9 +62,6 @@ function RouteComponent() {
                           </TableCell>
                           <TableCell>{playerData.invited_by ? playerData.invited_by.name : '-'}</TableCell>
                           <TableCell>
-                            {playerData.paid ? 'Pago' : 'Devendo'}
-                          </TableCell>
-                          <TableCell>
                             <Button
                               variant="outline"
                               size="sm"
@@ -80,9 +77,10 @@ function RouteComponent() {
                                 )
                               }}
                             >
-                              {paymentStatusMutation.isPending && processingPaymentId === gameData?.id ? 'Atualizando...' : playerData.paid ? 'Marcar como devendo' : 'Marcar como pago'}
+                              <span className={playerData.paid ? 'text-green-500' : 'text-red-500'}>
+                                {playerData.paid ? 'Pago' : 'Devendo'}
+                              </span>
                             </Button>
-
                           </TableCell>
                         </TableRow>
                       ))
