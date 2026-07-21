@@ -12,6 +12,54 @@ interface Player {
   invited_by_name: string | null;
 }
 
+export interface TeamPlayer {
+  name: string
+  is_goalkeeper?: boolean
+}
+
+export interface GeneratedTeam {
+  name: string
+  players: TeamPlayer[]
+}
+
+export interface GeneratedTeamsResult {
+  teams: GeneratedTeam[]
+  goalkeepers: TeamPlayer[]
+}
+
+export function generateTeams(players: TeamPlayer[], teamCount = 3): GeneratedTeamsResult {
+  const goalkeepers = players.filter((player) => player.is_goalkeeper)
+  const fieldPlayers = players.filter((player) => !player.is_goalkeeper)
+
+  const shuffledPlayers = [...fieldPlayers].sort(() => Math.random() - 0.5)
+  const teams = Array.from({ length: teamCount }, (_, index) => ({
+    name: `Time ${index + 1}`,
+    players: [] as TeamPlayer[],
+  }))
+
+  const teamSizes = Array.from({ length: teamCount }, () => 0)
+
+  shuffledPlayers.forEach((player) => {
+    let targetTeamIndex = 0
+    let smallestSize = Number.POSITIVE_INFINITY
+
+    teamSizes.forEach((size, index) => {
+      if (size < smallestSize) {
+        smallestSize = size
+        targetTeamIndex = index
+      }
+    })
+
+    teams[targetTeamIndex].players.push(player)
+    teamSizes[targetTeamIndex] += 1
+  })
+
+  return {
+    teams,
+    goalkeepers,
+  }
+}
+
 export function parseListaFutebol(texto: string): Player[] {
 const listaFinal: Player[] = [];
   

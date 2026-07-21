@@ -131,3 +131,21 @@ export function useGamePlayerUpdatePaymentStatus() {
     }
   });
 }
+
+export function useDeleteGamePlayer() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (playerIds: string[]) => {
+      for (const id of playerIds) {
+        await supabase
+          .from("game_players")
+          .delete()
+          .eq("id", id)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['game-player-data'] });
+    }
+  });
+}

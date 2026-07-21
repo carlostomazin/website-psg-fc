@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export const Route = createFileRoute('/_app/games/$game/')({
   component: RouteComponent,
@@ -18,44 +19,84 @@ function RouteComponent() {
   const { data: gamePlayerData, isLoading: isGamePlayerDataLoading, isError: isGamePlayerDataError } = useGamePlayerDataByGameId(game)
   const paymentStatusMutation = useGamePlayerUpdatePaymentStatus()
   const [processingPaymentId, setProcessingPaymentId] = React.useState<string | null>(null)
+  const [selectedRows, setSelectedRows] = React.useState<Set<string>>(new Set())
 
   // normalize game date
   const gameDate = gameData ? new Date(gameData.game_date).toLocaleDateString() : null
+
+  const toggleRowSelection = (playerId: string) => {
+    const newSelected = new Set(selectedRows)
+    if (newSelected.has(playerId)) {
+      newSelected.delete(playerId)
+    } else {
+      newSelected.add(playerId)
+    }
+    setSelectedRows(newSelected)
+  }
+
+  const totalPlayers = gamePlayerData?.length ?? 0
+
+  const toggleAllRows = () => {
+    if (selectedRows.size === totalPlayers) {
+      setSelectedRows(new Set())
+    } else {
+      const allIds = gamePlayerData?.map(p => p.id) || []
+      setSelectedRows(new Set(allIds))
+    }
+  }
+
+  const isAllSelected = totalPlayers > 0 && selectedRows.size === totalPlayers
 
   return (
     <>
       <Header breadcrumbs={[{ label: "Jogos", href: "/games/" }, { label: `Jogo ${gameDate}` }]} />
       <div className="@container/main flex flex-1 flex-col gap-2 px-2 lg:px-6">
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-          <SectionHead gameDate={gameDate} gameId={game} />
+          <SectionHead 
+            gameDate={gameDate} 
+            gameId={game} 
+            selectedRows={selectedRows}
+            onDeleteComplete={() => setSelectedRows(new Set())}
+          />
           <div className="p-4">
             <div className="overflow-hidden rounded-lg border">
               <Table>
                 <TableHeader className="bg-muted">
                   <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox
+                        checked={isAllSelected}
+                        onCheckedChange={toggleAllRows}
+                      />
+                    </TableHead>
                     <TableHead>Nome</TableHead>
                     <TableHead>Convidado por</TableHead>
-                    {/* <TableHead>Status</TableHead> */}
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isGamePlayerDataLoading ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="h-24 text-center">
+                      <TableCell colSpan={5} className="h-24 text-center">
                         Carregando dados dos jogadores...
                       </TableCell>
                     </TableRow>
                   ) : isGamePlayerDataError ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="h-24 text-center">
+                      <TableCell colSpan={5} className="h-24 text-center">
                         Erro ao carregar dados dos jogadores.
                       </TableCell>
                     </TableRow>
                   ) :
                     gamePlayerData && gamePlayerData.length > 0 ? (
                       gamePlayerData.map(playerData => (
-                        <TableRow key={playerData.id}>
+                        <TableRow key={playerData.id} className={selectedRows.has(playerData.id) ? 'bg-accent' : ''}>
+                          <TableCell className="w-12">
+                            <Checkbox
+                              checked={selectedRows.has(playerData.id)}
+                              onCheckedChange={() => toggleRowSelection(playerData.id)}
+                            />
+                          </TableCell>
                           <TableCell>
                             <Link to={"/players/$player"} params={{ player: playerData.player.id }}>
                               {playerData.player.name}
@@ -89,7 +130,7 @@ function RouteComponent() {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={4} className="h-24 text-center">
+                        <TableCell colSpan={5} className="h-24 text-center">
                           Nenhum jogador encontrado.
                         </TableCell>
                       </TableRow>
