@@ -34,7 +34,6 @@ export function SectionHead({ gameDate, gameId, selectedRows, onDeleteComplete }
 
     try {
       await deleteGamePlayerMutation.mutateAsync(playerIds)
-      window.alert(`${selectedCount} jogador(es) excluído(s) com sucesso.`)
       onDeleteComplete?.()
     } catch (error) {
       console.error('Erro ao excluir jogador(es)', error)

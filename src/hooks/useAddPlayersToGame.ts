@@ -10,12 +10,20 @@ interface PlayerData {
   invited_by_name: string | null;
 }
 
+interface AddPlayersToGameParams {
+  gameId: string;
+  text?: string;
+  singlePlayer?: PlayerData;
+}
+
 export function useAddPlayersToGame() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ gameId, text }: { gameId: string; text: string }) => {
-      const lista: PlayerData[] = parseListaFutebol(text);
+    mutationFn: async ({ gameId, text, singlePlayer }: AddPlayersToGameParams) => {
+      const lista: PlayerData[] = singlePlayer
+        ? [singlePlayer]
+        : parseListaFutebol(text ?? "");
 
       // Get existing players
       const existingPlayers = await getPlayers();
